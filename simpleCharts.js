@@ -134,7 +134,27 @@
                 ctx.fillStyle = series.color;
                 ctx.textBaseline = 'bottom';
                 ctx.textAlign = 'center';
-                ctx.fillText('' + data[i] + (series.suffix ? series.suffix : ''), center, middle - fontSize / 2);
+                if (i === 0) {
+                    if ((i + 1) < data.length && data[i + 1] > data[i]) {
+                        ctx.textBaseline = 'top';
+                    }
+                } else if (i === (data.length - 1)) {
+                    if (data[i - 1] > data[i]) {
+                        ctx.textBaseline = 'top';
+                    }
+                } else {
+                    if (data[i - 1] > data[i]) {
+                        if (data[i] >= data[i + 1]) {
+                            ctx.textAlign = 'left';
+                        } else {
+                            ctx.textBaseline = 'top';
+                        }
+                    } else if (data[i] < data[i + 1]) {
+                        ctx.textAlign = 'right';
+                    }
+                }
+                ctx.fillText('' + data[i] + (series.suffix ? series.suffix : ''), center,
+                                middle + (ctx.textBaseline === 'bottom' ? -(fontSize / 4) : (fontSize / 4)));
                 // categories
                 ctx.fillStyle = xAxis.color;
                 ctx.textBaseline = 'middle';
