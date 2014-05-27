@@ -19,7 +19,7 @@
     var showMe = function () {
         var data = [];
         var categories = [];
-        var days = parseInt(document.getElementById('days').value) || 5;
+        var days = parseInt(document.getElementById('days').value);
         for (var i = 0; i < days; i++) {
             data.push(Math.floor(Math.random() * 101));
             categories.push('' + ((new Date()).getMonth() + 1) + '/' + (i + 1));

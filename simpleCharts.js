@@ -33,8 +33,9 @@
 
     calcYAxisRange = function (options) {
         var data = options.series.data;
+        var step = options.yAxis.step;
         if (data.length <= 0) {
-            options.yAxis.range = [100, 0];
+            options.yAxis.range = [100, 100 - step];
         } else {
             var min = data[0];
             var max = data[0];
@@ -46,15 +47,23 @@
                     max = data[i];
                 }
             }
-            var step = options.yAxis.step;
             while ((options.height / ((max - min) / step + 3)) < options.fontSize) {
                 options.yAxis.step = step *= 2;
             }
             min = Math.floor(min / step) * step;
-            options.yAxis.range = [];
-            for (; min <= max; min += step) {
-                options.yAxis.range.unshift(min);
+            var range = [];
+            for (; min < max; min += step) {
+                range.unshift(min);
             }
+            range.unshift(min);
+            if (range.length === 1) {
+                if (min === 100) {
+                    range.push(min - step);
+                } else {
+                    range.unshift(min + step);
+                }
+            }
+            options.yAxis.range = range;
         }
     };
 
