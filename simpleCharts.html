@@ -4,30 +4,35 @@
     <meta charset="UTF-8">
     <title>A simple charts using html5 canvas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        canvas {
+            display: block;
+        }
+    </style>
     <script type="text/javascript" src="simpleCharts.js"></script>
 </head>
 <body>
 <a href="#" onclick="showMe();">Show me!</a>
-
-<div>
-    <canvas id="simple-charts" width="400" height="300"></canvas>
-</div>
+<canvas id="simple-charts" width="400" height="300"></canvas>
 <script type="text/javascript">
     var showMe = function () {
         simpleCharts({
             id: 'simple-charts',
             fontSize: 14, // default: 14 px
             series: {
-                data: [60, 80, 55, 75],
-                color: '#808080' // default: '#808080'
+                data: [54, 61, 81, 88, 100],
+                color: 'rgb(35, 187, 136)', // default: '#808080'
+                suffix: '%'
             },
             xAxis: {
-                categories: ['05-01', '05-02', '05-03', '05-04'],
-                color: '#808080' // default: '#808080'
+                categories: ['05/01', '05/02', '05/03', '05/04'],
+                color: 'black' // default: '#808080'
             },
             yAxis: {
-                title: '正点率（%）',
-                color: '#808080' // default: '#808080'
+                title: '百分比%',
+                color: 'black', // default: '#808080'
+                lineColor: 'rgb(225, 225, 225)', // default: '#808080'
+                step: 5 // default: 5
             }
         });
     };
