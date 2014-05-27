@@ -113,8 +113,14 @@
         // xAxis
         var data = series.data;
         if (data.length > 0) {
+            var lastCategory = xAxis.categories[xAxis.categories.length - 1];
+            var maxCategoryWidth = ctx.measureText('w' + (lastCategory ? lastCategory : '')).width;
+            var maxCategories = Math.floor((width - maxLabelWidth * 2) / maxCategoryWidth);
+            var categoriesSample = Math.ceil(data.length / maxCategories);
+
             var colWidth = (width - maxLabelWidth * 2) / data.length;
             var lastMiddle = Math.floor((lineCount - 0.5) * lineHeight) + 0.5;
+
             for (var i = 0; i < data.length; i++) {
                 var center = Math.floor(maxLabelWidth + (i + 0.5) * colWidth) + 0.5;
                 var middle = Math.floor((1.5 + (yAxis.range[0] - data[i]) / yAxis.step) * lineHeight) + 0.5;
@@ -130,36 +136,38 @@
                 ctx.arc(center, middle, 2.5, 0, Math.PI * 2);
                 ctx.fillStyle = series.color;
                 ctx.fill();
-                // value
-                ctx.fillStyle = series.color;
-                ctx.textBaseline = 'bottom';
-                ctx.textAlign = 'center';
-                if (i === 0) {
-                    if ((i + 1) < data.length && data[i + 1] > data[i]) {
-                        ctx.textBaseline = 'top';
-                    }
-                } else if (i === (data.length - 1)) {
-                    if (data[i - 1] > data[i]) {
-                        ctx.textBaseline = 'top';
-                    }
-                } else {
-                    if (data[i - 1] > data[i]) {
-                        if (data[i] >= data[i + 1]) {
-                            ctx.textAlign = 'left';
-                        } else {
+                if ((i % categoriesSample) === 0) {
+                    // value
+                    ctx.fillStyle = series.color;
+                    ctx.textBaseline = 'bottom';
+                    ctx.textAlign = 'center';
+                    if (i === 0) {
+                        if ((i + 1) < data.length && data[i + 1] > data[i]) {
                             ctx.textBaseline = 'top';
                         }
-                    } else if (data[i] < data[i + 1]) {
-                        ctx.textAlign = 'right';
+                    } else if (i === (data.length - 1)) {
+                        if (data[i - 1] > data[i]) {
+                            ctx.textBaseline = 'top';
+                        }
+                    } else {
+                        if (data[i - 1] > data[i]) {
+                            if (data[i] >= data[i + 1]) {
+                                ctx.textAlign = 'left';
+                            } else {
+                                ctx.textBaseline = 'top';
+                            }
+                        } else if (data[i] < data[i + 1]) {
+                            ctx.textAlign = 'right';
+                        }
                     }
+                    ctx.fillText('' + data[i] + (series.suffix ? series.suffix : ''), center,
+                                    middle + (ctx.textBaseline === 'bottom' ? -(fontSize / 4) : (fontSize / 4)));
+                    // categories
+                    ctx.fillStyle = xAxis.color;
+                    ctx.textBaseline = 'middle';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(xAxis.categories[i] ? xAxis.categories[i] : '', center, lastMiddle);
                 }
-                ctx.fillText('' + data[i] + (series.suffix ? series.suffix : ''), center,
-                                middle + (ctx.textBaseline === 'bottom' ? -(fontSize / 4) : (fontSize / 4)));
-                // categories
-                ctx.fillStyle = xAxis.color;
-                ctx.textBaseline = 'middle';
-                ctx.textAlign = 'center';
-                ctx.fillText(xAxis.categories[i] ? xAxis.categories[i] : '', center, lastMiddle);
                 // line
                 ctx.beginPath();
                 ctx.moveTo(center, middle);
