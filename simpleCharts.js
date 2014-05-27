@@ -47,7 +47,7 @@
                     max = data[i];
                 }
             }
-            while ((options.height / ((max - min) / step + 3)) < options.fontSize) {
+            while ((options.height / ((max - min) / step + 3)) < options.fontSize * 1.5) {
                 options.yAxis.step = step *= 2;
             }
             min = Math.floor(min / step) * step;
