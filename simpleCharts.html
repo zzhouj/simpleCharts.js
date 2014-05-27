@@ -13,20 +13,27 @@
     <script type="text/javascript" src="simpleCharts.js"></script>
 </head>
 <body>
-<a href="#" onclick="showMe();">Show me!</a>
+<a href="#" onclick="showMe();">Show me!</a> in <input id="days" value="5" type="number" size="3" maxlength="3"/> days
 <canvas id="simple-charts" width="400" height="300"></canvas>
 <script type="text/javascript">
     var showMe = function () {
+        var data = [];
+        var categories = [];
+        var days = parseInt(document.getElementById('days').value) || 5;
+        for (var i = 0; i < days; i++) {
+            data.push(Math.floor(Math.random() * 101));
+            categories.push('' + ((new Date()).getMonth() + 1) + '/' + (i + 1));
+        }
         simpleCharts({
             id: 'simple-charts',
             fontSize: 14, // default: 14 px
             series: {
-                data: [54, 61, 81, 88, 100],
+                data: data,
                 color: 'rgb(35, 187, 136)', // default: '#808080'
                 suffix: '%'
             },
             xAxis: {
-                categories: ['05/01', '05/02', '05/03', '05/04', '05/05'],
+                categories: categories,
                 color: 'black' // default: '#808080'
             },
             yAxis: {
