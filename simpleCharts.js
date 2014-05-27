@@ -9,6 +9,13 @@
         }
 
         // default values
+        if (options.progress !== 0) {
+            options.progress = options.progress || 100;
+        }
+        if (options.duration !== 0) {
+            options.duration = options.duration || 1000;
+        }
+        options.fps = 60;    // requestAnimationFrame / cancelAnimationFrame
         options.fontSize = options.fontSize || 14;
         options.series = options.series || {};
         options.series.data = options.series.data || [];
@@ -28,7 +35,21 @@
 
         calcYAxisRange(options);
 
-        drawSimpleCharts(options);
+        var step = function () {
+            if (options.current < options.progress && options.duration > 0) {
+                drawSimpleCharts(options);
+                options.current += options.progress * (1000 / options.fps) / options.duration;
+                canvas.setAttribute('data-requestID', requestAnimationFrame(step));
+            } else {
+                options.current = options.progress;
+                drawSimpleCharts(options);
+                canvas.removeAttribute('data-requestID');
+            }
+        };
+
+        cancelAnimationFrame(canvas.getAttribute('data-requestID'));
+        options.current = 0;
+        step();
     };
 
     calcYAxisRange = function (options) {
@@ -76,6 +97,8 @@
         var series = options.series;
         var xAxis = options.xAxis;
         var yAxis = options.yAxis;
+        var current = options.current;
+        var progress = options.progress;
 
         var lineCount = yAxis.range.length + 2;
         var lineHeight = Math.floor(height / lineCount);
@@ -109,6 +132,10 @@
                 ctx.stroke();
             }
         }
+
+        ctx.beginPath();
+        ctx.rect(0, 0, current * width / progress, height);
+        ctx.clip();
 
         // xAxis
         var data = series.data;
