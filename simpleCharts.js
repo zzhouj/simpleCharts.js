@@ -24,7 +24,7 @@
         // canvas
         options.width = canvas.width;
         options.height = canvas.height;
-        options.ctx = canvas.getContext('2d');
+        options.context = canvas.getContext('2d');
 
         calcYAxisRange(options);
 
@@ -34,7 +34,7 @@
     calcYAxisRange = function (options) {
         var data = options.series.data;
         if (data.length <= 0) {
-            options.yAxis.range = [0, 100];
+            options.yAxis.range = [100, 0];
         } else {
             var min = data[0];
             var max = data[0];
@@ -48,18 +48,63 @@
             }
             var step = options.yAxis.step;
             while ((options.height / ((max - min) / step + 3)) < options.fontSize) {
-                step *= 2;
+                options.yAxis.step = step *= 2;
             }
             min = Math.floor(min / step) * step;
             options.yAxis.range = [];
             for (; min <= max; min += step) {
-                options.yAxis.range.push(min);
+                options.yAxis.range.unshift(min);
             }
         }
     };
 
     drawSimpleCharts = function (options) {
+        var width = options.width;
+        var height = options.height;
+        var ctx = options.context;
+
+        var fontSize = options.fontSize;
+        var series = options.series;
+        var xAxis = options.xAxis;
+        var yAxis = options.yAxis;
+
+        var lineCount = yAxis.range.length + 2;
+        var lineHeight = Math.floor(height / lineCount);
+
+        ctx.save();
+        ctx.clearRect(0, 0, width, height);
+
+        ctx.font = '' + fontSize + 'px arial';
+        ctx.textBaseline = 'middle';
+        var maxLabelWidth = ctx.measureText('ww' + yAxis.range[0]).width;
+
+        // yAxis
+        for (var i = 0; i < lineCount; i++) {
+            var middle = Math.floor((i + 0.5) * lineHeight) + 0.5;
+            if (i == 0) {
+                if (yAxis.title) {
+                    ctx.fillStyle = yAxis.color;
+                    ctx.textAlign = 'left';
+                    ctx.fillText(yAxis.title, fontSize / 4, middle);
+                }
+            } else if (i <= yAxis.range.length) {
+                // label
+                ctx.fillStyle = yAxis.color;
+                ctx.textAlign = 'center';
+                ctx.fillText(yAxis.range[i - 1], maxLabelWidth / 2, middle);
+                // plot line
+                ctx.beginPath();
+                ctx.moveTo(maxLabelWidth, middle);
+                ctx.lineTo(width - maxLabelWidth, middle);
+                ctx.strokeStyle = yAxis.lineColor;
+                ctx.stroke();
+            }
+        }
+
+        // xAxis
         // TODO
+
+        ctx.restore();
     };
 
     window.simpleCharts = simpleCharts;
