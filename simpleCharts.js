@@ -102,7 +102,40 @@
         }
 
         // xAxis
-        // TODO
+        var data = series.data;
+        if (data.length > 0) {
+            var colWidth = (width - maxLabelWidth * 2) / data.length;
+            var lastMiddle = Math.floor((lineCount - 0.5) * lineHeight) + 0.5;
+            for (var i = 0; i < data.length; i++) {
+                var center = Math.floor(maxLabelWidth + (i + 0.5) * colWidth) + 0.5;
+                var middle = Math.floor((1.5 + (yAxis.range[0] - data[i]) / yAxis.step) * lineHeight) + 0.5;
+                // line
+                if (i > 0) {
+                    ctx.lineTo(center, middle);
+                    ctx.strokeStyle = series.color;
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                }
+                // dot
+                ctx.beginPath();
+                ctx.arc(center, middle, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = series.color;
+                ctx.fill();
+                // value
+                ctx.fillStyle = series.color;
+                ctx.textBaseline = 'bottom';
+                ctx.textAlign = 'center';
+                ctx.fillText('' + data[i] + (series.suffix ? series.suffix : ''), center, middle - fontSize / 2);
+                // categories
+                ctx.fillStyle = xAxis.color;
+                ctx.textBaseline = 'middle';
+                ctx.textAlign = 'center';
+                ctx.fillText(xAxis.categories[i] ? xAxis.categories[i] : '', center, lastMiddle);
+                // line
+                ctx.beginPath();
+                ctx.moveTo(center, middle);
+            }
+        }
 
         ctx.restore();
     };
