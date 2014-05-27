@@ -10,11 +10,33 @@
             border: 1px solid rgb(225, 225, 225);
         }
     </style>
-    <script type="text/javascript" src="simpleCharts.js"></script>
+    <script type="text/javascript" src="simpleCharts.min.js"></script>
 </head>
 <body>
 <a href="#" onclick="showMe();">Show me!</a> in <input id="days" value="7" type="number" size="3" maxlength="3"/> days
 <canvas id="simple-charts" width="400" height="300"></canvas>
+<pre>
+        simpleCharts({
+            id: 'simple-charts',
+            duration: 300, // default: 1000
+            fontSize: 14, // default: 14 px
+            series: {
+                data: data,
+                color: 'green', // default: '#808080'
+                suffix: '%'
+            },
+            xAxis: {
+                categories: categories,
+                color: 'blue' // default: '#808080'
+            },
+            yAxis: {
+                title: 'Percent%',
+                color: 'red', // default: '#808080'
+                lineColor: 'rgb(225, 225, 225)', // default: '#808080'
+                step: 5 // default: 5
+            }
+        });
+</pre>
 <script type="text/javascript">
     var showMe = function () {
         var data = [];
