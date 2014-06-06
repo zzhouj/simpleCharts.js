@@ -1,6 +1,18 @@
 (function (window) {
     var simpleCharts, calcYAxisRange, drawSimpleCharts;
 
+    var requestAnimationFrame = (function () {
+        return window.requestAnimationFrame ||
+                function (cb) {
+                    return window.setTimeout(cb, 1000 / 60);
+                };
+    })();
+
+    var cancelAnimationFrame = (function () {
+        return window.cancelAnimationFrame ||
+                window.clearTimeout;
+    })();
+
     simpleCharts = function (options) {
         options = options || {};
         var canvas = document.getElementById(options.id);
